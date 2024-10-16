@@ -188,5 +188,7 @@ server 開啟，需要 run
 app.run()
 Ctrl + C →關閉 server
 為了不重複開／關 server，要帶 debug=True
-"""
 app.run(debug=True)
+上傳靜態網頁要改成下方程式碼
+"""
+app.run(host="0.0.0.0")
