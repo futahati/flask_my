@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首頁</title>
+</head>
+
+<!-- 網頁內容顯示區 body -->
+<body>
+    <h1>{{name}}  歡迎光臨～～</h1>
+    <!-- 尚未於後端設定，date在網頁上，是顯示不正確的格式 -->
+    目前時間：{{ date }}
+
+    <!-- 新增超連結 -->
+    <br>
+    <!-- href →是用route裡的名稱，不是用 templates的html -->
+    <a href="/books">購買書籍</a>
+    <br>
+    <a href="/etf">histock ETF股市資訊</a>
+    <br>
+    <a href="/etf_chart">ETF圖表</a>
+    <br>
+    <a href="/etf_twse">TWSE ETF資訊</a>
+    <br>
+    <a href="/twseetf_chart">TWSE ETF圖表集</a>
+</body>
+</html>

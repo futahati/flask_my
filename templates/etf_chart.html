@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETF_Chart</title>
+    <!-- 引用 jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- 引用 echarts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+</head>
+<body>
+    <h1>ETF圖形繪製</h1>
+    <br>
+    <a href="/">回首頁</a>
+    <!-- 設定繪圖區域 DOM 容器，設定寬、高 -->
+    <div id="main" style="width: 1200px;height:400px;"></div>
+
+    <script type="text/javascript">
+        // 使用 $.ajax
+
+        $.ajax(
+            {
+                url:"/etf_data",  // route
+                type:"GET",
+                dataType:"json",
+                success:(data)=>{
+                    console.log(data);
+                    drawChart(chart1, data["x"], data["y"])
+                }
+            }
+        );
+
+        // 使用 JavaScript
+        $("h1").css("text-align", "center");
+        // 基於準備好的dom，初始化echarts實例
+        var chart1 = echarts.init(document.getElementById('main'));
+
+        function drawChart(chart, xdata, ydata, title="圖表", name="數值"){
+
+            // 指定圖表的配置項和數據
+            var option = {
+                title: {
+                text: title
+                },
+                tooltip: {},
+                legend: {
+                    data: [name]
+                },
+                xAxis: {
+                    data: xdata
+                },
+                yAxis: {},
+                series: [
+                    {
+                    name: name,
+                    type: 'bar',
+                    data: ydata
+                    }
+                ]
+            };
+
+            // 使用剛才指定的配置項和數據顯示圖表。
+            chart.setOption(option);
+        }
+      </script>
+
+</body>
+</html>

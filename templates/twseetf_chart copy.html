@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TWSE ETF_Chart</title>
+    <!-- 引用 jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- 引用 echarts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+</head>
+<body>
+    <h1>TWSE ETF圖形繪製</h1>
+    <br>
+    <a href="/">回首頁</a>
+    <h2>ETF成交股數前20筆(最高)資料表</h2>
+    <table border="3">
+        <thead>            
+            <tr>
+                {% for th in columns %}
+                <th>                    
+                    {{ th }}                    
+                </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for tr in values %}
+            <tr>
+                {% for td in tr %}
+                <td>                    
+                    {{ td }}                    
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- 設定繪圖區域 DOM 容器，設定寬、高 -->
+    <div id="main" style="width: 800px;height:600px;"></div>
+    <!-- 第 2 張圖表 -->
+    <div id="main2" style="width: 1500px;height:600px;"></div>
+
+    <script type="text/javascript">
+        // 使用 $.ajax，動態更新區塊
+
+        $.ajax(
+            {
+                url:"/twseetf_data",  // 使用route的名稱
+                type:"GET",
+                dataType:"json",
+                success:(data)=>{
+                    console.log(data);
+                    drawChart1(chart1, data["證券名稱"], data["漲跌價"])  // 成功後，執行的程式碼
+                }
+            }
+        );
+
+        // 第 2 張圖，使用不同的 route 的名稱
+        $.ajax(
+            {
+                url:"/twseetf_data2",  // 使用route的名稱
+                type:"GET",
+                dataType:"json",
+                success:(data)=>{
+                    console.log(data);
+                    drawChart2(chart2, data["證券代號"], data["開盤"], data["收盤"], data["最高"], data["最低"])  // 成功後，執行的程式碼
+                }
+            }
+        );
+
+        // 使用 JavaScript
+        $("h1").css("text-align", "center");
+        // 基於準備好的dom，初始化echarts實例
+        const chart1 = echarts.init(document.getElementById('main'));  // 取得要繪製圖片的 → 繪圖區域 DOM 容器。使用 2 張圖表，原 var chart1改為 const chart1
+
+        // 第 2 張圖表
+        const chart2 = echarts.init(document.getElementById('main2'));
+
+        // 使用函式 自定函式名(DOM容器名，x軸，y軸，標題名，圖示名)
+        function drawChart1(chart, xdata, ydata, title="TWSE_ETF當日成交股數最高前20名圖表", name="漲跌價"){
+
+            // 指定圖表的配置項和數據
+            var option;
+
+            const labelRight = {normal: {label : {position: 'right'}}};
+            option = {
+            title: {
+                text: title,
+                subtext: 'From ExcelHome',
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                type: 'shadow'  // 默認為直線，可選為：'line' | 'shadow'
+                }
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            grid: {
+                top: 80,  // 圖表的上間距
+                bottom: 30  // 圖表的下間距
+            },
+            xAxis: {
+                type: 'value',
+                position: 'top',  // 圖表y軸顯示的位置 top 上 bottom 下
+                splitLine: {
+                lineStyle: {
+                    type: 'dashed'
+                }
+                }
+            },
+            yAxis: {
+                type: 'category',
+                axisLine: { show: false },
+                axisLabel: { show: false },
+                axisTick: { show: false },
+                splitLine: { show: false },
+                data: xdata
+            },
+            series: [
+                {
+                name: name,
+                type: 'bar',
+                stack: 'Total',
+                itemStyle : { normal: {
+                    color: 'orange',  // 改變線條顏色
+                    borderRadius: 5,
+                    label : {
+                        show: true,
+                        position: 'left',
+                        formatter: '{b}'
+                    }  // label 設定線條的標籤
+                }},
+                data: ydata
+                }
+            ]
+            };
+
+            // 使用剛才指定的配置項和數據顯示圖表。
+            chart.setOption(option);
+        }
+
+        // 第二張圖 自設函式
+        var app = {};
+        function drawChart2(chart2, xdata2, y1, y2, y3, y4, title="TWSE_ETF 開盤／收盤／最高／最低", name="盤價"){
+            
+            var option;
+
+            const posList = [
+            'left',
+            'right',
+            'top',
+            'bottom',
+            'inside',
+            'insideTop',
+            'insideLeft',
+            'insideRight',
+            'insideBottom',
+            'insideTopLeft',
+            'insideTopRight',
+            'insideBottomLeft',
+            'insideBottomRight'
+            ];
+            app.configParameters = {
+            rotate: {
+                min: -90,
+                max: 90
+            },
+            align: {
+                options: {
+                left: 'left',
+                center: 'center',
+                right: 'right'
+                }
+            },
+            verticalAlign: {
+                options: {
+                top: 'top',
+                middle: 'middle',
+                bottom: 'bottom'
+                }
+            },
+            position: {
+                options: posList.reduce(function (map, pos) {
+                map[pos] = pos;
+                return map;
+                }, {})
+            },
+            distance: {
+                min: 0,
+                max: 100
+            }
+            };
+            app.config = {
+            rotate: 90,
+            align: 'left',
+            verticalAlign: 'middle',
+            position: 'insideBottom',
+            distance: 15,
+            onChange: function () {
+                const labelOption = {
+                rotate: app.config.rotate,
+                align: app.config.align,
+                verticalAlign: app.config.verticalAlign,
+                position: app.config.position,
+                distance: app.config.distance
+                };
+                myChart.setOption({
+                series: [
+                    {
+                    label: labelOption
+                    },
+                    {
+                    label: labelOption
+                    },
+                    {
+                    label: labelOption
+                    },
+                    {
+                    label: labelOption
+                    }
+                ]
+                });
+            }
+            };
+            const labelOption = {
+            show: true,
+            position: app.config.position,
+            distance: app.config.distance,
+            align: app.config.align,
+            verticalAlign: app.config.verticalAlign,
+            rotate: app.config.rotate,
+            formatter: '{c}  {name|{a}}',
+            fontSize: 16,
+            rich: {
+                name: {}
+            }
+            };
+
+            option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['開盤', '收盤', '最高', '最低']  // 開盤、收盤、最高、最低(待取columns)
+            },
+            toolbox: {
+                show: true,
+                orient: 'vertical',
+                left: 'right',
+                top: 'center',
+                feature: {
+                mark: { show: true },
+                dataView: { show: true, readOnly: false },
+                magicType: { show: true, type: ['line', 'bar', 'stack'] },
+                restore: { show: true },
+                saveAsImage: { show: true }
+                }
+            },
+            xAxis: [
+                {
+                type: 'category',
+                axisTick: { show: false },
+                data: xdata2  // 證券名稱 xdata
+                }
+            ],
+            yAxis: [
+                {
+                type: 'value'
+                }
+            ],
+            series: [
+                {
+                name: 'Forest',
+                type: 'bar',
+                barGap: 0,
+                label: labelOption,
+                emphasis: {
+                    focus: 'series'
+                },
+                data: y1  //每一個證券的開盤
+                },
+                {
+                name: 'Steppe',
+                type: 'bar',
+                label: labelOption,
+                emphasis: {
+                    focus: 'series'
+                },
+                data: y2  //每一個證券的收盤
+                },
+                {
+                name: 'Desert',
+                type: 'bar',
+                label: labelOption,
+                emphasis: {
+                    focus: 'series'
+                },
+                data: y3 //每一個證券的最高
+                },
+                {
+                name: 'Wetland',
+                type: 'bar',
+                label: labelOption,
+                emphasis: {
+                    focus: 'series'
+                },
+                data: y4  //每一個證券的最低
+                }
+            ]
+            };
+            // 使用剛才指定的配置項和數據顯示圖表。
+            chart2.setOption(option);
+        }
+      </script>
+
+</body>
+</html>

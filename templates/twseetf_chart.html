@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TWSE ETF_Chart</title>
+    <!-- 引用 jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- 引用 echarts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+
+    <style>
+        .le {
+            display: inline-block;
+        }
+    </style>
+</head>
+
+
+<body>
+    <h1>TWSE ETF圖形繪製</h1>
+    <br>
+    <a href="/">回首頁</a>
+    <h2>ETF成交股數前20筆(最高)資料表</h2>
+
+    <div class="le">
+        <table border="3">
+            <thead>            
+                <tr>
+                    {% for th in columns %}
+                    <th>                    
+                        {{ th }}                    
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for tr in values %}
+                <tr>
+                    {% for td in tr %}
+                    <td>                    
+                        {{ td }}                    
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- 設定繪圖區域 DOM 容器，設定寬、高 -->
+    <div class="le" id="main" style="width: 50%;height:500px;"></div>
+
+    <!-- 第 2 張圖表 -->
+    <!-- <div id="main2" style="width: 1500px;height:600px;"></div> -->
+
+    <script type="text/javascript">
+        // 使用 $.ajax，動態更新區塊
+
+        $.ajax(
+            {
+                url:"/twseetf_data",  // 使用route的名稱
+                type:"GET",
+                dataType:"json",
+                success:(data)=>{
+                    console.log(data);
+                    drawChart1(chart1, data["證券名稱"], data["漲跌價"])  // 成功後，執行的程式碼
+                }
+            }
+        );
+
+        // 第 2 張圖，使用不同的 route 的名稱
+        // $.ajax(
+        //     {
+        //         url:"/twseetf_data2",  // 使用route的名稱
+        //         type:"GET",
+        //         dataType:"json",
+        //         success:(data)=>{
+        //             console.log(data);
+        //             drawChart2(chart2, data["證券代號"], data["開盤"], data["收盤"], data["最高"], data["最低"])  // 成功後，執行的程式碼
+        //         }
+        //     }
+        // );
+
+        // 使用 JavaScript
+        $("h1").css("text-align", "center");
+        // 基於準備好的dom，初始化echarts實例
+        const chart1 = echarts.init(document.getElementById('main'));  // 取得要繪製圖片的 → 繪圖區域 DOM 容器。使用 2 張圖表，原 var chart1改為 const chart1
+
+        // 第 2 張圖表
+        // const chart2 = echarts.init(document.getElementById('main2'));
+        
+        // 讓圖表隨著視窗放大、縮小
+        // window.addEventListener("resize",
+        //     () => {
+        //         chart1.resize();
+        //     }
+        // );
+
+
+        // 使用函式 自定函式名(DOM容器名，x軸，y軸，標題名，圖示名)
+        function drawChart1(chart, xdata, ydata, title="TWSE_ETF 漲跌價", name="漲跌價"){
+
+            // 指定圖表的配置項和數據
+            var option;
+
+            const labelRight = {normal: {label : {position: 'right'}}};
+            option = {
+            title: {
+                text: title,
+                subtext: 'From ExcelHome',
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                type: 'shadow'  // 默認為直線，可選為：'line' | 'shadow'
+                }
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            grid: {
+                top: 80,  // 圖表的上間距
+                bottom: 30  // 圖表的下間距
+            },
+            xAxis: {
+                type: 'value',
+                position: 'top',  // 圖表y軸顯示的位置 top 上 bottom 下
+                splitLine: {
+                lineStyle: {
+                    type: 'dashed'
+                }
+                }
+            },
+            yAxis: {
+                type: 'category',
+                axisLine: { show: false },
+                axisLabel: { show: false },
+                axisTick: { show: false },
+                splitLine: { show: false },
+                data: xdata
+            },
+            series: [
+                {
+                name: name,
+                type: 'bar',
+                stack: 'Total',
+                itemStyle : { normal: {
+                    color: 'orange',  // 改變線條顏色
+                    borderRadius: 5,
+                    label : {
+                        show: true,
+                        position: 'left',
+                        formatter: '{b}'
+                    }  // label 設定線條的標籤
+                }},
+                data: ydata
+                }
+            ]
+            };
+
+            // 使用剛才指定的配置項和數據顯示圖表。
+            chart.setOption(option);
+        }
+
+      </script>
+
+</body>
+</html>

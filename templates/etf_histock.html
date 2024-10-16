@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETF股市資訊</title>
+
+    <style>
+        body{
+            background-color: rgb(185, 207, 208);
+            text-align: center;
+        }
+
+        table{
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            width: 60%;
+            margin: 0 auto;
+            border: 2px blue solid;
+
+        }
+
+        th{
+            background-color: bisque;
+        }
+
+        td{
+            background-color: beige;
+        }
+
+    </style>
+</head>
+
+<!-- 網頁內容顯示區 body -->
+<body>
+    <h1>國內成分證券ETF股價查詢(集中市場)</h1>
+    <!-- 若尚未於後端設定，date在網頁上，是顯示不正確的格式 -->
+    <span style="color:brown;font-size: 24px;"><em>目前時間：{{ date }}</em></span>
+    <br>
+    <a href="/">回首頁</a>
+    <a href="">重新讀取</a>
+    <!-- 增加 form 表單 關於升降序-->
+    <form action="" method="POST">
+        <select name="sort" id="sort">
+            <option value="true">升序(由小至大)</option>
+            <option value="false">降序(由大至小)</option>
+        </select>
+        <button type="submit">排序</button>
+    </form>
+    <br>
+    <span>資料來源：<a href="https://histock.tw/stock/etf.aspx">https://histock.tw/stock/etf.aspx</a></span>
+    <!-- 使用 jinja語法 表格化！！  columns, values -->
+    <table border="1">
+        <thead>            
+            <tr>
+                {% for th in columns %}
+                <th>                    
+                    {{ th }}                    
+                </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for tr in values %}
+            <tr>
+                {% for td in tr %}
+                <td>                    
+                    {{ td }}                    
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+<hr>
+    {{ columns }}
+    {{ values }}
+<hr>
+    <!-- 使用 jinja語法 for -->
+    {% for data in datas %}
+    <div>
+        {{ data[0] }},{{ data[1] }},{{ data[2] }},{{ data[3] }},{{ data[4] }},{{ data[5] }},{{ data[6] }},{{ data[7] }},{{ data[8] }},{{ data[9] }},{{ data[10] }},{{ data[11] }},{{ data[12] }}
+    </div>
+    {% endfor %}
+
+</body>
+</html>

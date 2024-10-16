@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>書店首頁</title>
+
+    <style>
+        body{
+            background-color: lightgray;
+            text-align: center;
+        }
+
+        .temp{
+            background-color: aquamarine;
+            text-align: center;
+            margin: 0px auto;
+            border-radius: 12px;
+        }
+
+        .bookname{
+            background-color: mediumseagreen;
+        }
+
+        .price{
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 32px;
+        }
+
+        /* . + class名稱 */
+        .bookimage{
+            display: block;  /* display→預設顯示模式；block→區塊元素 */
+            width: 300px;  /* 影響圖片大小 */
+            border-radius: 12px;  /* 圓矩形外框 */
+            border: 5px burlywood solid;  /* 外框線條設定 [粗細 顏色 ???] */
+            margin: 6px auto;  /* 外間距 上下6px 左右→自動調整平均 */
+            padding: 10px 10px;
+            
+        }
+    </style>
+
+</head>
+
+<!-- 網頁內容顯示區 -->
+<body>
+    <h1>目前書籍</h1>
+    <br>
+    <a href="/"><button>回首頁</button></a>
+    <!-- 若尚未於後端設定，date在網頁上，是顯示不正確的格式 -->
+    <h3 style="color: blue;"><em>目前時間：{{ date }}</em></h3>
+
+    <!-- 增加 CSS樣式、HTML標籤 -->
+    <h1 class="temp">增加 CSS樣式、HTML標籤 顯示結果</h1>
+    {% for key in books %}
+    <h2 class="bookname">{{ books[key]["name"] }}</h2>
+    <!-- 增加 中文說明 -->
+    <div class="price">價格(NT)：{{ books[key].price }}</div>
+    <!-- 輸出圖片連結 -->
+    <img class="bookimage" src="{{ books[key].image_url }}" alt="找不到圖片哦～">
+
+    <button>購買</button>
+
+    {% endfor %}
+
+    
+<hr>
+
+</body>
+</html>
