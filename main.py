@@ -1,14 +1,6 @@
 from flask import Flask, render_template, request
-from datetime import datetime
-from scrape import (
-    show_today,
-    get_etfstocks,
-    show_etfstocks,
-    show_etf_json,
-    get_twes,
-    show_twse,
-    show_twseetf_json,
-)
+from twsescrape import show_today, get_twes, show_twse, show_twseetf_json
+from scrape import show_today, get_etfstocks, show_etfstocks, show_etf_json
 import json
 
 
@@ -31,7 +23,7 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     today = show_today()
-    name = "外星來客"
+    name = "到訪者"
     return render_template("index.html", date=today, name=name)
 
 
@@ -178,7 +170,7 @@ def twse_etf_data2():
 # [twse]twseetf_chart.html，取得函式裡的 json資訊，寫在 twseetf_chart.html 裡
 @app.route("/twseetf_chart")
 def twse_etf_chart():
-    # 以成交股數排序，取得最高前20名資訊
+    # 以成交股數排序，取得最高前10名資訊
     columns, values = show_twse()
     return render_template("twseetf_chart.html", columns=columns, values=values)
 

@@ -4,32 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TWSE ETF_Chart</title>
+    <!-- 引用 bulma -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     <!-- 引用 jquery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <!-- 引用 echarts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
 
-    <style>
-        .le {
-            display: inline-block;
-        }
-    </style>
 </head>
 
-
+<!-- 網頁內容顯示區 body -->
 <body>
-    <h1>TWSE ETF圖形繪製</h1>
+    <h1 class="subtitle is-1">TWSE ETF圖形繪製</h1>
     <br>
-    <a href="/">回首頁</a>
-    <h2>ETF成交股數前20筆(最高)資料表</h2>
-
-    <div class="le">
-        <table border="3">
+    <div class="buttons">
+        <a href="/" class="button is-link is-outlined">回首頁</a>
+    </div>
+    <h2>ETF成交股數前10筆(最高)資料表</h2>
+    <!-- 使用 bulma 設定表格捲軸 -->
+    <div class="table-container">
+        <!-- 使用 bulma 設定表格css樣式 -->
+        <table class="table is-hoverable">
             <thead>            
                 <tr>
                     {% for th in columns %}
-                    <th>                    
-                        {{ th }}                    
+                    <th class="is-link has-text-centered">
+                        {{ th }}
                     </th>
                     {% endfor %}
                 </tr>
@@ -38,8 +38,8 @@
                 {% for tr in values %}
                 <tr>
                     {% for td in tr %}
-                    <td>                    
-                        {{ td }}                    
+                    <td class="is-info has-text-right">
+                        {{ td }}
                     </td>
                     {% endfor %}
                 </tr>
@@ -47,7 +47,7 @@
             </tbody>
         </table>
     </div>
-    <!-- 設定繪圖區域 DOM 容器，設定寬、高 -->
+    <!-- echarts 設定繪圖區域 DOM 容器，設定寬、高 -->
     <div class="le" id="main" style="width: 50%;height:500px;"></div>
 
     <!-- 第 2 張圖表 -->

@@ -4,25 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>首頁</title>
+    <!-- 引用 bulma -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
 </head>
 
 <!-- 網頁內容顯示區 body -->
 <body>
-    <h1>{{name}}  歡迎光臨～～</h1>
-    <!-- 尚未於後端設定，date在網頁上，是顯示不正確的格式 -->
-    目前時間：{{ date }}
+    <section class="section">
+        <div class="container">
+          <h1 class="title is-1 has-text-info">
+            <span class="is-1">{{name}}</span>  您好，歡迎光臨～～
+          </h1>
+          <p class="subtitle has-text-warning">
+            <!-- 尚未於後端設定，date在網頁上，是顯示不正確的格式 -->
+            目前時間：{{ date }}
+          </p>
 
-    <!-- 新增超連結 -->
-    <br>
-    <!-- href →是用route裡的名稱，不是用 templates的html -->
-    <a href="/books">購買書籍</a>
-    <br>
-    <a href="/etf">histock ETF股市資訊</a>
-    <br>
-    <a href="/etf_chart">ETF圖表</a>
-    <br>
-    <a href="/etf_twse">TWSE ETF資訊</a>
-    <br>
-    <a href="/twseetf_chart">TWSE ETF圖表集</a>
+        <!-- 新增超連結 href →是用route裡的名稱，不是用 templates的html -->
+        <a href="/books">購買書籍</a>
+        <!-- 使用 bulma -->
+        <div class="card">
+            <p class="subtitle is-3">histock ETF</p>
+            <footer class="card-footer">
+                <a href="/etf" class="card-footer-item has-background-danger-light is-size-4">histock ETF股市資訊</a>
+                <a href="/etf_chart" class="card-footer-item has-background-danger-light is-size-4" target="_blank">histock ETF圖表</a>
+            </footer>
+        </div>
+        <!-- <a href="/etf">histock ETF股市資訊</a>
+        <a href="/etf_chart" target="_blank">ETF圖表</a> -->
+        <div class="card">
+            <p class="subtitle is-3">TWES ETF</p>
+            <footer class="card-footer">
+                <a href="/etf_twse" class="card-footer-item has-background-success-light is-size-4">TWSE ETF資訊</a>
+                <a href="/twseetf_chart" class="card-footer-item has-background-success-light is-size-4" target="_blank">TWSE ETF圖表集</a>
+            </footer>
+        </div>
+        <!-- <a href="/etf_twse">TWSE ETF資訊</a>
+        <a href="/twseetf_chart" target="_blank">TWSE ETF圖表集</a> -->
+
+        </div>
+      </section>
+
 </body>
 </html>
