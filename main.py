@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from twsescrape import show_today, get_twes, show_twse, show_twseetf_json
+from twsescrape import show_today, get_twse, show_twse, show_twseetf_json, get_holidays
 from scrape import show_today, get_etfstocks, show_etfstocks, show_etf_json
 import json
 
@@ -128,13 +128,20 @@ def get_twse_etf():
     today = show_today()
 
     # 一定要讀取函式裡所有 return ，無法單獨引用一個！！
-    datas, title = get_twes()
+    datas, title = get_twse()
 
+    # TradingDay股市交易日(民國)
+    TradingDay = title.partition(" ")[0]
     columns = datas.columns
     values = datas.values
 
     return render_template(
-        "etf_twse.html", date=today, title=title, columns=columns, values=values
+        "etf_twse.html",
+        date=today,
+        title=title,
+        TradingDay=TradingDay,
+        columns=columns,
+        values=values,
     )
 
 
@@ -170,9 +177,14 @@ def twse_etf_data2():
 # [twse]twseetf_chart.html，取得函式裡的 json資訊，寫在 twseetf_chart.html 裡
 @app.route("/twseetf_chart")
 def twse_etf_chart():
+    datas, title = get_twse()
+    TradingDay = title.partition(" ")[0]
+
     # 以成交股數排序，取得最高前10名資訊
     columns, values = show_twse()
-    return render_template("twseetf_chart.html", columns=columns, values=values)
+    return render_template(
+        "twseetf_chart.html", TradingDay=TradingDay, columns=columns, values=values
+    )
 
 
 """
