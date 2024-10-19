@@ -106,13 +106,6 @@ def show_today():
     day = datetime.datetime.now()
     weekday = {0: "日", 1: "一", 2: "二", 3: "三", 4: "四", 5: "五", 6: "六"}
     today = day.strftime("%Y/%m/%d  %p %H:%M")
-    print(today)
-    # 加一天
-    tomorrow = (day + datetime.timedelta(days=1)).strftime("%Y%m%d")
-    print(tomorrow)
-    # 減一天
-    yesterday = (day + datetime.timedelta(days=-1)).strftime("%Y%m%d")
-    print("yesterday=" + yesterday)
 
     return today
 
@@ -120,15 +113,20 @@ def show_today():
 # 取得股市交易日
 def get_tradingDay():
     holidays = get_holidays()
-    date = datetime.datetime.now().strftime("%Y%m%d")
-
+    # 簡化今日日期程式碼
     day = datetime.datetime.now()
+
+    # 取得 str 型態年月日，例：20241031
+    date = day.strftime("%Y%m%d")
+    # 取得指定時間，str型態
     Specifytime = datetime.datetime.strptime("13:30", "%H:%M").time()
 
     if date not in holidays:
-        timenow = datetime.datetime.now().time()
+        # 取得當下時間
+        timenow = day.time()
 
         # 判斷時間是否在 13:30 前，若是，取得前一天日期，否則取當天日期
+        # 連假、週一的判斷會出錯，待解決～～
         if timenow < Specifytime:
             TradingDay = (day + datetime.timedelta(days=-1)).strftime("%Y%m%d")
         else:
@@ -165,4 +163,4 @@ def get_holidays():
 
 # 本地端測上方程式碼。測試時，若有其他 server 在運行，請先其他的 server 關閉。
 if __name__ == "__main__":
-    print(get_twse())
+    print(show_today())
