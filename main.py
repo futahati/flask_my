@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from twsescrape import show_today, get_twse, show_twse, show_twseetf_json, get_holidays
+from twsescrape import show_today, get_twse, show_twse, show_twseetf_json
 from scrape import show_today, get_etfstocks, show_etfstocks, show_etf_json
 import json
 
@@ -160,7 +160,7 @@ def twse_etf_data():
         return json.dumps({"result": "failure", "exception": str(e)})
 
 
-# 第 2 張圖表
+# 第 2 張圖表 → 失敗中，待研究
 @app.route("/twseetf_data2")
 def twse_etf_data2():
     try:

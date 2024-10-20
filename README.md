@@ -1,4 +1,4 @@
-# 作品結果
+# 學習成果...
 
 關於學習 Python, Flask, HTML, CSS, JavaScript 的成果展示。
 
@@ -6,6 +6,6 @@
 
 https://wadehuanglearning.blogspot.com/2019/05/commit-commit-commit-why-what-commit.html
 
-**bulma (CSS樣式)：**
+**bulma (CSS 樣式)：**
 
 https://bulma.io/

@@ -12,19 +12,29 @@
 <!-- 網頁內容顯示區 body -->
 <body>
     <p class="title is-1 is-spaced">{{ title }}</p>
-    <p class="subtitle is-3">目前時間：{{ date }}</p>
-    <div class="buttons">
-        <a href="/" class="button is-link is-outlined">回首頁</a>
+    
+    <div class="columns">
+        <div class="column is-three-fifths is-size-3 has-text-link">目前時間：{{ date }}</div>
+        <div class="column">
+            <a href="/" class="button is-link is-outlined">回首頁</a>
+        </div>
+        <!-- <div class="column"></div> -->
     </div>
-    <span>股市交易日(民國):{{ TradingDay }}</span>
-    <span>資料來源：<a href="https://histock.tw/stock/etf.aspx" title="臺灣證券交易所">https://www.twse.com.tw/</a></span>
+    
+    <div class="columns">
+        <div class="column is-6 is-size-4">股市交易日(民國)：{{ TradingDay }}</div>
+        <div class="column is-6  is-size-4">
+            資料來源：<a href="https://www.twse.com.tw/" title="臺灣證券交易所">https://www.twse.com.tw/</a>
+        </div>
+    </div>
+
     <!-- 使用 jinja語法 表格化！！  columns, values -->
     <div class="table-container">
         <table class="table is-narrow">
             <thead>
                 <tr>
                     {% for th in columns %}
-                    <th class="has-background-grey has-text-centered">
+                    <th class="has-background-info has-text-centered">
                         {{ th }}
                     </th>
                     {% endfor %}
@@ -34,7 +44,7 @@
                 {% for tr in values %}
                 <tr>
                     {% for td in tr %}
-                    <td class="has-background-grey-lighter has-text-right">
+                    <td class="has-background-info-light has-text-right has-text-weight-normal">
                         {{ td }}
                     </td>
                     {% endfor %}

@@ -9,40 +9,32 @@ from io import StringIO
 
 # 20241015新增TWES臺灣證券交易所_每日收盤行情(ETF)_HTML版
 def get_twse():
-    """
-    20241019新增 holidays
-    但是，股市截止時間未設定完成
-    """
     try:
-        holidays = get_holidays()
-        # date = datetime.datetime.now().strftime("%Y%m%d")
-        # 測試用
-        date = "20241018"
+        date = get_TradingDay()
 
         datas = None
         title = None
-        if date not in holidays:
-            url = (
-                "https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX?date="
-                + date
-                + "&type=0099P&response=html"
-            )
-            resp = requests.get(url)
-            soup = BeautifulSoup(resp.text, "lxml")
-            title = soup.find("thead").find("div").text
-            ths = [th.text for th in soup.find("thead").find_all("th")[1:]]
-            tds = [
-                [td.text for td in tr.find_all("td")]
-                for tr in soup.find("tbody").find_all("tr")
-            ]
+        url = (
+            "https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX?date="
+            + date
+            + "&type=0099P&response=html"
+        )
+        resp = requests.get(url)
+        soup = BeautifulSoup(resp.text, "lxml")
+        title = soup.find("thead").find("div").text
+        ths = [th.text for th in soup.find("thead").find_all("th")[1:]]
+        tds = [
+            [td.text for td in tr.find_all("td")]
+            for tr in soup.find("tbody").find_all("tr")
+        ]
 
-            datas = pd.DataFrame(tds, columns=ths)
-            # 將新增欄位（漲跌價），並指定欄位位置（9） → 漲跌價 = 漲跌(+/-) + 漲跌價差
-            datas.insert(
-                loc=9, column="漲跌價", value=datas["漲跌(+/-)"] + datas["漲跌價差"]
-            )
-            # 刪除 漲跌(+/-) 、 漲跌價差、本益比 這 3 個欄位。iloc的欄位置→10,11,16；inplace=True→改變原始資料(直接覆寫)
-            datas.drop(datas.iloc[:, [10, 11, 16]], axis=1, inplace=True)
+        datas = pd.DataFrame(tds, columns=ths)
+        # 將新增欄位（漲跌價），並指定欄位位置（9） → 漲跌價 = 漲跌(+/-) + 漲跌價差
+        datas.insert(
+            loc=9, column="漲跌價", value=datas["漲跌(+/-)"] + datas["漲跌價差"]
+        )
+        # 刪除 漲跌(+/-) 、 漲跌價差、本益比 這 3 個欄位。iloc的欄位置→10,11,16；inplace=True→改變原始資料(直接覆寫)
+        datas.drop(datas.iloc[:, [10, 11, 16]], axis=1, inplace=True)
 
         return datas, title
 
@@ -102,37 +94,14 @@ def convert_value(value):
 
 # 取得當日時間
 def show_today():
-
+    """
+    格式：西元日期 + A/MP + 時:分
+    """
     day = datetime.datetime.now()
     weekday = {0: "日", 1: "一", 2: "二", 3: "三", 4: "四", 5: "五", 6: "六"}
     today = day.strftime("%Y/%m/%d  %p %H:%M")
 
     return today
-
-
-# 取得股市交易日
-def get_tradingDay():
-    holidays = get_holidays()
-    # 簡化今日日期程式碼
-    day = datetime.datetime.now()
-
-    # 取得 str 型態年月日，例：20241031
-    date = day.strftime("%Y%m%d")
-    # 取得指定時間，str型態
-    Specifytime = datetime.datetime.strptime("13:30", "%H:%M").time()
-
-    if date not in holidays:
-        # 取得當下時間
-        timenow = day.time()
-
-        # 判斷時間是否在 13:30 前，若是，取得前一天日期，否則取當天日期
-        # 連假、週一的判斷會出錯，待解決～～
-        if timenow < Specifytime:
-            TradingDay = (day + datetime.timedelta(days=-1)).strftime("%Y%m%d")
-        else:
-            TradingDay = day.strftime("%Y%m%d")
-
-        return TradingDay
 
 
 # 取得臺灣放假日(文字型態)，排除掉「補行上班日」
@@ -161,6 +130,34 @@ def get_holidays():
     return holidays
 
 
+# 取得股市交易日
+def get_TradingDay():
+    holidays = get_holidays()
+    # 簡化今日日期程式碼
+    day = datetime.datetime.now()
+
+    date = day.strftime("%Y%m%d")
+    # 取得當下時間
+    timenow = day.time()
+    # 取得指定時間，str型態
+    Specifytime = datetime.datetime.strptime("13:30", "%H:%M").time()
+
+    n = -1  # 計算前一次交易日
+    # 2條件成立(非假日、過了13:30後)
+    if date not in holidays and timenow > Specifytime:
+        TradingDay = date
+    else:
+        for TradingDay in holidays:
+            TradingDay = (day + datetime.timedelta(days=n)).strftime("%Y%m%d")
+            if TradingDay in holidays:
+                n += -1
+                continue
+            else:
+                break
+
+    return TradingDay
+
+
 # 本地端測上方程式碼。測試時，若有其他 server 在運行，請先其他的 server 關閉。
 if __name__ == "__main__":
-    print(show_today())
+    print(get_twse())

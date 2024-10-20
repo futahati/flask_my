@@ -15,13 +15,26 @@
 
 <!-- 網頁內容顯示區 body -->
 <body>
-    <h1 class="subtitle is-1">TWSE ETF圖形繪製</h1>
-    <br>
-    <div class="buttons">
-        <a href="/" class="button is-link is-outlined">回首頁</a>
+
+    <section class="hero is-warning">
+        <div class="hero-body">
+          <p class="title is-size-1">TWSE ETF圖形繪製</p>
+          <p class="subtitle">成交股數前10筆</p>
+        </div>
+    </section>
+
+    <div class="fixed-grid">
+        <div class="grid">
+          <div class="cell is-6 is-size-4 has-text-link">股市交易日(民國)：{{ TradingDay }}</div>
+          <div class="cell">
+            <a href="/" class="button is-link is-outlined">回首頁</a>
+          </div>
+        </div>
     </div>
-    <h2>ETF成交股數前10筆(最高)資料表</h2>
-    <span>股市交易日(民國):{{ TradingDay }}</span>
+
+    <!-- echarts 設定繪圖區域 DOM 容器，設定寬、高 -->
+    <div class="le" id="main" style="width: 50%;height: 500px;"></div>
+
     <!-- 使用 bulma 設定表格捲軸 -->
     <div class="table-container">
         <!-- 使用 bulma 設定表格css樣式 -->
@@ -48,8 +61,6 @@
             </tbody>
         </table>
     </div>
-    <!-- echarts 設定繪圖區域 DOM 容器，設定寬、高 -->
-    <div class="le" id="main" style="width: 50%;height:500px;"></div>
 
     <!-- 第 2 張圖表 -->
     <!-- <div id="main2" style="width: 1500px;height:600px;"></div> -->
@@ -99,7 +110,7 @@
 
 
         // 使用函式 自定函式名(DOM容器名，x軸，y軸，標題名，圖示名)
-        function drawChart1(chart, xdata, ydata, title="TWSE_ETF 漲跌價", name="漲跌價"){
+        function drawChart1(chart, xdata, ydata, title="漲跌價展示表", name="漲跌價"){
 
             // 指定圖表的配置項和數據
             var option;
@@ -114,16 +125,6 @@
                 trigger: 'axis',
                 axisPointer: {
                 type: 'shadow'  // 默認為直線，可選為：'line' | 'shadow'
-                }
-            },
-            toolbox: {
-                show : true,
-                feature : {
-                    mark : {show: true},
-                    dataView : {show: true, readOnly: false},
-                    magicType : {show: true, type: ['line', 'bar']},
-                    restore : {show: true},
-                    saveAsImage : {show: true}
                 }
             },
             grid: {
